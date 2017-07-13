@@ -50,9 +50,9 @@ void Game::UpdateModel()
 	{
 		if (IsComputerTurn)
 		{
-			srand(time(NULL));
 			if (IsColorAdded == false)
 			{
+				srand(time(NULL));
 				ColorPattern.push_back(rand() % 4 + 1);
 				IsColorAdded = true;
 			}
@@ -62,8 +62,7 @@ void Game::UpdateModel()
 				WhichColor(ColorPattern);
 				TimeOutForSetColor = 60;
 				IndexForColorPattern++;
-				///Possibly problematic because it continues after last color that is shown, without waiting for 60 frames.
-				if (IndexForColorPattern == ColorPattern.size() - 1)
+				if (IndexForColorPattern == ColorPattern.size())
 				{
 					IsComputerTurn = false;
 					IsColorAdded = false;
@@ -74,13 +73,14 @@ void Game::UpdateModel()
 			RevertAllColorsToNormalSlowly(BlueTopRight, 2);
 			RevertAllColorsToNormalSlowly(YellowBottomLeft, 3);
 			RevertAllColorsToNormalSlowly(GreenBottomRight, 4);
-			TimeOutForSetColor--;
+			if (TimeOutForSetColor != 0) { TimeOutForSetColor--; }
 		}
 		else
 		{
 			if (UserInput.size() != ColorPattern.size())
 			{
-				if (wnd.mouse.GetPosX() > RedTopLeft.HorizontalLeft + AxisX && wnd.mouse.GetPosX() < AxisX && wnd.mouse.GetPosY() < AxisY && wnd.mouse.GetPosY() > AxisY + RedTopLeft.VerticalTop && wnd.mouse.LeftIsPressed() && TimeOutForSetColor == 0)
+				
+				if (wnd.mouse.GetPosX() < AxisX && wnd.mouse.GetPosX() > AxisX + RedTopLeft.HorizontalLeft && wnd.mouse.GetPosY() < AxisY && wnd.mouse.GetPosY() > AxisY + RedTopLeft.VerticalTop && wnd.mouse.LeftIsPressed() && TimeOutForSetColor == 0)
 				{
 					UserInput.push_back(1);
 					SetColor(RedTopLeft, 30, 0, 0);
@@ -90,7 +90,7 @@ void Game::UpdateModel()
 						GameOver = true;
 					}
 				}
-				if (wnd.mouse.GetPosX() > AxisX && wnd.mouse.GetPosX() < AxisX + BlueTopRight.HorizontalRight && wnd.mouse.GetPosY() < AxisY && wnd.mouse.GetPosY() > AxisY + BlueTopRight.VerticalTop && wnd.mouse.LeftIsPressed() && TimeOutForSetColor == 0)
+				if (wnd.mouse.GetPosX() > AxisX && wnd.mouse.GetPosX() < AxisX + BlueTopRight.HorizontalRight && wnd.mouse.GetPosY() < AxisY && wnd.mouse.GetPosY() > AxisY + BlueTopRight.VerticalTop && wnd.mouse.LeftIsPressed() && TimeOutForSetColor == 0 )
 				{
 					UserInput.push_back(2);
 					SetColor(BlueTopRight, 0, 0, 30);
@@ -103,7 +103,7 @@ void Game::UpdateModel()
 				if (wnd.mouse.GetPosX() > YellowBottomLeft.HorizontalLeft + AxisX && wnd.mouse.GetPosX() < AxisX && wnd.mouse.GetPosY() > AxisY && wnd.mouse.GetPosY() < AxisY + YellowBottomLeft.VerticalBottom && wnd.mouse.LeftIsPressed() && TimeOutForSetColor == 0)
 				{
 					UserInput.push_back(3);
-					SetColor(BlueTopRight, 30, 30, 0);
+					SetColor(YellowBottomLeft, 30, 30, 0);
 					TimeOutForSetColor = 30;
 					if (UserInput[UserInput.size() - 1] != ColorPattern[UserInput.size() - 1])
 					{
@@ -113,14 +113,14 @@ void Game::UpdateModel()
 				if (wnd.mouse.GetPosX() > AxisX && wnd.mouse.GetPosX() < AxisX + GreenBottomRight.HorizontalRight && wnd.mouse.GetPosY() > AxisY && wnd.mouse.GetPosY() < AxisY + GreenBottomRight.VerticalBottom && wnd.mouse.LeftIsPressed() && TimeOutForSetColor == 0)
 				{
 					UserInput.push_back(4);
-					SetColor(BlueTopRight, 0, 30, 0);
+					SetColor(GreenBottomRight, 0, 30, 0);
 					TimeOutForSetColor = 30;
 					if (UserInput[UserInput.size() - 1] != ColorPattern[UserInput.size() - 1])
 					{
 						GameOver = true;
 					}
 				}
-				TimeOutForSetColor--;
+				if (TimeOutForSetColor != 0) { TimeOutForSetColor--; }
 				RevertAllColorsToNormalSlowly(RedTopLeft, 1);
 				RevertAllColorsToNormalSlowly(BlueTopRight, 2);
 				RevertAllColorsToNormalSlowly(YellowBottomLeft, 3);
@@ -129,8 +129,9 @@ void Game::UpdateModel()
 			else
 			{
 				IsComputerTurn = true;
+				UserInput.clear();
 			}
-
+			
 		}
 	}
 }
@@ -139,6 +140,7 @@ void Game::ComposeFrame()
 {
 	if (GameOver)
 	{
+		//Try again next time
 	}
 	else {
 		for (int TempX = RedTopLeft.HorizontalLeft; TempX < RedTopLeft.HorizontalRight; TempX++)
@@ -180,8 +182,8 @@ void Game::RevertAllColorsToNormalSlowly(Square& Gold, int WhichSquare)
 		Gold.RedV++;
 		break;
 	case 2:
-		if(Gold.BlueV < 255)
-		Gold.BlueV++;
+		if (Gold.BlueV < 255)
+			Gold.BlueV++;
 		break;
 	case 3:
 		if(Gold.RedV < 255)
