@@ -1,24 +1,20 @@
 #pragma once
 
+#include "Graphics.h"
+
 class Square
 {
 public:
-	int RedV;
-	int GreenV;
-	int BlueV;
-    int HorizontalLeft;
-    int HorizontalRight;
-    int VerticalBottom;
-    int VerticalTop;	
-	Square(int GivenRedV, int GivenGreenV, int GivenBlueV, int GivenHorizontalLeft, int GivenHorizontalRight, int GivenVerticalBottom, int GivenVerticalTop)
-	{
-		RedV = GivenRedV;
-		GreenV = GivenGreenV;
-		BlueV = GivenBlueV;
-		HorizontalLeft = GivenHorizontalLeft;
-		HorizontalRight = GivenHorizontalRight;
-		VerticalBottom = GivenVerticalBottom;
-		VerticalTop = GivenVerticalTop;
-	}
+	Square( int MinRed, int MinGreen, int MinBlue, 
+			int MaxRed, int MaxGreen, int MaxBlue, 
+			int Left, int Top, int Right, int Bottom );
+
+	bool MouseOver( int MX, int MY )const;
+	void Draw( Graphics &Gfx )const;
+public:
+	int red, maxRed, minRed;
+	int green, maxGreen, minGreen;
+	int blue, maxBlue, minBlue;
+	int left, top, right, bottom;
 };
 

@@ -26,10 +26,10 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	RedTopLeft(255, 0, 0, -100, -5, -5, -100),
-	BlueTopRight(0, 0, 255, +5, +100, -5, -100),
-	YellowBottomLeft(255, 255, 0, -100, -5, +100, +5),
-	GreenBottomRight(0, 255, 0, +5, +100, +100, +5)
+	RedTopLeft(			30,  0,  0, 255,   0,   0, -100,  -5,  -5, -100),
+	BlueTopRight(		 0,  0, 30,   0,   0, 255,    5,  -5, 100, -100),
+	YellowBottomLeft(	30, 30,  0, 255, 255,   0, -100,  -5, 100,    5),
+	GreenBottomRight(	 0, 30,  0,   0, 255,   0,    5, 100, 100,    5)
 {
 }
 
@@ -142,7 +142,8 @@ void Game::ComposeFrame()
 	{
 		//Try again next time
 	}
-	else {
+	else 
+	{
 		for (int TempX = RedTopLeft.HorizontalLeft; TempX < RedTopLeft.HorizontalRight; TempX++)
 		{
 			for (int TempY = RedTopLeft.VerticalTop; TempY < RedTopLeft.VerticalBottom; TempY++)
