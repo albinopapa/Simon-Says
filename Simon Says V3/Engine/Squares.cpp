@@ -11,6 +11,13 @@ Square::Square( int MinRed, int MinGreen, int MinBlue,
 {
 }
 
+void Square::ResetColor()
+{
+	red = minRed;
+	green = minGreen;
+	blue = minBlue;
+}
+
 bool Square::MouseOver( int MX, int MY ) const
 {
 	return

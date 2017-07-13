@@ -9,6 +9,7 @@ public:
 			int MaxRed, int MaxGreen, int MaxBlue, 
 			int Left, int Top, int Right, int Bottom );
 
+	void ResetColor();
 	bool MouseOver( int MX, int MY )const;
 	void Draw( Graphics &Gfx )const;
 public:
