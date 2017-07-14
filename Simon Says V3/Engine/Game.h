@@ -39,7 +39,6 @@ private:
 	void SetColor(Square& Gold, int Red, int Green, int Blue);
 	void RevertAllColorsToNormalSlowly(Square& Gold, int WhichSquare);
 	void WhichColor(std::vector<int> ColorPattern);
-	void InitiateEndOfWorld(int NuclearCode, int two);
 	/********************************/
 	/*  User Functions              */
 	/********************************/
@@ -50,7 +49,7 @@ private:
 	/*  User Variables              */
 	bool IsComputerTurn = true;
 	bool IsColorAdded = false;
-	bool GameOver = false;
+	bool GameOver = true;
 	std::vector<int> ColorPattern;
 	std::vector<int> UserInput;
 	int TimeOutForSetColor = 0;

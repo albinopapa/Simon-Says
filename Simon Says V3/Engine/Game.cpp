@@ -26,10 +26,10 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	RedTopLeft(255, 0, 0, -100, -5, -5, -100),
-	BlueTopRight(0, 0, 255, +5, +100, -5, -100),
-	YellowBottomLeft(255, 255, 0, -100, -5, +100, +5),
-	GreenBottomRight(0, 255, 0, +5, +100, +100, +5)
+	RedTopLeft(255, 0, 0, -150, -5, -5, -150),
+	BlueTopRight(0, 0, 255, +5, +150, -5, -150),
+	YellowBottomLeft(255, 255, 0, -150, -5, +150, +5),
+	GreenBottomRight(0, 255, 0, +5, +150, +150, +5)
 {
 }
 
@@ -44,7 +44,16 @@ void Game::Go()
 void Game::UpdateModel()
 {
 	if(GameOver)
-	{ // Title screen right here. Yeah, Im lazy
+	{
+		if (wnd.kbd.KeyIsPressed(VK_RETURN))
+		{
+			GameOver = false;
+			TimeOutForSetColor = 40;
+			SetColor(RedTopLeft, 255, 0, 0);
+			SetColor(BlueTopRight, 0, 0, 255);
+			SetColor(YellowBottomLeft, 255, 255, 0);
+			SetColor(GreenBottomRight, 0, 255, 0);
+		}
 	}
 	else
 	{
@@ -60,13 +69,14 @@ void Game::UpdateModel()
 			{
 
 				WhichColor(ColorPattern);
-				TimeOutForSetColor = 60;
+				TimeOutForSetColor = 25;
 				IndexForColorPattern++;
 				if (IndexForColorPattern == ColorPattern.size())
 				{
 					IsComputerTurn = false;
 					IsColorAdded = false;
 					IndexForColorPattern = 0;
+					TimeOutForSetColor = 30;
 				}
 			}
 			RevertAllColorsToNormalSlowly(RedTopLeft, 1);
@@ -83,44 +93,50 @@ void Game::UpdateModel()
 				if (wnd.mouse.GetPosX() < AxisX && wnd.mouse.GetPosX() > AxisX + RedTopLeft.HorizontalLeft && wnd.mouse.GetPosY() < AxisY && wnd.mouse.GetPosY() > AxisY + RedTopLeft.VerticalTop && wnd.mouse.LeftIsPressed() && TimeOutForSetColor == 0)
 				{
 					UserInput.push_back(1);
-					SetColor(RedTopLeft, 30, 0, 0);
-					TimeOutForSetColor = 30;
+					SetColor(RedTopLeft, 255, 150, 150);
+					TimeOutForSetColor = 15;
 					if (UserInput[UserInput.size() - 1] != ColorPattern[UserInput.size() - 1])
 					{
 						GameOver = true;
+						ColorPattern.clear();
 					}
 				}
 				if (wnd.mouse.GetPosX() > AxisX && wnd.mouse.GetPosX() < AxisX + BlueTopRight.HorizontalRight && wnd.mouse.GetPosY() < AxisY && wnd.mouse.GetPosY() > AxisY + BlueTopRight.VerticalTop && wnd.mouse.LeftIsPressed() && TimeOutForSetColor == 0 )
 				{
 					UserInput.push_back(2);
-					SetColor(BlueTopRight, 0, 0, 30);
-					TimeOutForSetColor = 30;
+					SetColor(BlueTopRight, 150, 150, 255);
+					TimeOutForSetColor = 15;
 					if (UserInput[UserInput.size() - 1] != ColorPattern[UserInput.size() - 1])
 					{
 						GameOver = true;
+						ColorPattern.clear();
 					}
 				}
 				if (wnd.mouse.GetPosX() > YellowBottomLeft.HorizontalLeft + AxisX && wnd.mouse.GetPosX() < AxisX && wnd.mouse.GetPosY() > AxisY && wnd.mouse.GetPosY() < AxisY + YellowBottomLeft.VerticalBottom && wnd.mouse.LeftIsPressed() && TimeOutForSetColor == 0)
 				{
 					UserInput.push_back(3);
-					SetColor(YellowBottomLeft, 30, 30, 0);
-					TimeOutForSetColor = 30;
+					SetColor(YellowBottomLeft, 255, 255, 150);
+					TimeOutForSetColor = 15;
 					if (UserInput[UserInput.size() - 1] != ColorPattern[UserInput.size() - 1])
 					{
 						GameOver = true;
+						ColorPattern.clear();
 					}
 				}
 				if (wnd.mouse.GetPosX() > AxisX && wnd.mouse.GetPosX() < AxisX + GreenBottomRight.HorizontalRight && wnd.mouse.GetPosY() > AxisY && wnd.mouse.GetPosY() < AxisY + GreenBottomRight.VerticalBottom && wnd.mouse.LeftIsPressed() && TimeOutForSetColor == 0)
 				{
 					UserInput.push_back(4);
-					SetColor(GreenBottomRight, 0, 30, 0);
-					TimeOutForSetColor = 30;
+					SetColor(GreenBottomRight, 150, 255, 150);
+					TimeOutForSetColor = 15;
 					if (UserInput[UserInput.size() - 1] != ColorPattern[UserInput.size() - 1])
 					{
 						GameOver = true;
+						ColorPattern.clear();
 					}
 				}
+				
 				if (TimeOutForSetColor != 0) { TimeOutForSetColor--; }
+				
 				RevertAllColorsToNormalSlowly(RedTopLeft, 1);
 				RevertAllColorsToNormalSlowly(BlueTopRight, 2);
 				RevertAllColorsToNormalSlowly(YellowBottomLeft, 3);
@@ -130,6 +146,8 @@ void Game::UpdateModel()
 			{
 				IsComputerTurn = true;
 				UserInput.clear();
+				TimeOutForSetColor = 60;
+
 			}
 			
 		}
@@ -143,26 +161,10 @@ void Game::ComposeFrame()
 		//Try again next time
 	}
 	else {
-		for (int TempX = RedTopLeft.HorizontalLeft; TempX < RedTopLeft.HorizontalRight; TempX++)
-		{
-			for (int TempY = RedTopLeft.VerticalTop; TempY < RedTopLeft.VerticalBottom; TempY++)
-				gfx.PutPixel(AxisX + TempX, AxisY + TempY, RedTopLeft.RedV, RedTopLeft.GreenV, RedTopLeft.BlueV);
-		}
-		for (int TempX = BlueTopRight.HorizontalLeft; TempX < BlueTopRight.HorizontalRight; TempX++)
-		{
-			for (int TempY = BlueTopRight.VerticalTop; TempY < BlueTopRight.VerticalBottom; TempY++)
-				gfx.PutPixel(AxisX + TempX, AxisY + TempY, BlueTopRight.RedV, BlueTopRight.GreenV, BlueTopRight.BlueV);
-		}
-		for (int TempX = YellowBottomLeft.HorizontalLeft; TempX < YellowBottomLeft.HorizontalRight; TempX++)
-		{
-			for (int TempY = YellowBottomLeft.VerticalTop; TempY < YellowBottomLeft.VerticalBottom; TempY++)
-				gfx.PutPixel(AxisX + TempX, AxisY + TempY, YellowBottomLeft.RedV, YellowBottomLeft.GreenV, YellowBottomLeft.BlueV);
-		}
-		for (int TempX = GreenBottomRight.HorizontalLeft; TempX < GreenBottomRight.HorizontalRight; TempX++)
-		{
-			for (int TempY = GreenBottomRight.VerticalTop; TempY < GreenBottomRight.VerticalBottom; TempY++)
-				gfx.PutPixel(AxisX + TempX, AxisY + TempY, GreenBottomRight.RedV, GreenBottomRight.GreenV, GreenBottomRight.BlueV);
-		}
+		RedTopLeft.Draw(AxisX, AxisY, gfx);
+		BlueTopRight.Draw(AxisX, AxisY, gfx);
+		YellowBottomLeft.Draw(AxisX, AxisY, gfx);
+		GreenBottomRight.Draw(AxisX, AxisY, gfx);
 	}
 }
 
@@ -178,22 +180,67 @@ void Game::RevertAllColorsToNormalSlowly(Square& Gold, int WhichSquare)
 	switch (WhichSquare)
 	{
 	case 1:
-		if(Gold.RedV < 255)
-		Gold.RedV++;
+		if (Gold.GreenV > 5)
+		{
+			Gold.GreenV--;
+			Gold.GreenV--;
+			Gold.GreenV--;
+			Gold.GreenV--;
+			Gold.GreenV--;
+		}
+		if (Gold.BlueV  > 5) {
+			Gold.BlueV--;
+			Gold.BlueV--;
+			Gold.BlueV--;
+			Gold.BlueV--;
+			Gold.BlueV--;
+		}
 		break;
 	case 2:
-		if (Gold.BlueV < 255)
-			Gold.BlueV++;
+		if (Gold.RedV   > 5) {
+			Gold.RedV--;
+			Gold.RedV--;
+			Gold.RedV--;
+			Gold.RedV--;
+			Gold.RedV--;
+
+
+		}
+		if (Gold.GreenV > 5)
+		{
+			Gold.GreenV--;
+			Gold.GreenV--;
+			Gold.GreenV--;
+			Gold.GreenV--;
+			Gold.GreenV--;
+		}
 		break;
 	case 3:
-		if(Gold.RedV < 255)
-			Gold.RedV++;
-		if (Gold.GreenV < 255)
-			Gold.GreenV++;
+		if (Gold.BlueV  > 5) {
+			Gold.BlueV--;
+			Gold.BlueV--;
+			Gold.BlueV--;
+			Gold.BlueV--;
+			Gold.BlueV--;
+		}
 		break;
 	case 4:
-		if (Gold.GreenV < 255)
-			Gold.GreenV++;
+		if (Gold.RedV   > 5) {
+			Gold.RedV--;
+			Gold.RedV--;
+			Gold.RedV--;
+			Gold.RedV--;
+			Gold.RedV--;
+
+
+		}
+		if (Gold.BlueV  > 5) {
+			Gold.BlueV--;
+			Gold.BlueV--;
+			Gold.BlueV--;
+			Gold.BlueV--;
+			Gold.BlueV--;
+		}
 		break;
 	}
 }
@@ -203,27 +250,18 @@ void Game::WhichColor(std::vector<int> ColorPattern)
 	switch (ColorPattern[IndexForColorPattern])
 	{
 		case 1:
-			SetColor(RedTopLeft, 30, 0, 0);
+			SetColor(RedTopLeft, 255, 150, 150);
 			break;
 		case 2:
-			SetColor(BlueTopRight, 0, 0, 30);
+			SetColor(BlueTopRight, 150, 150, 255);
 			break;
 		case 3:
-			SetColor(YellowBottomLeft, 30, 30, 0);
+			SetColor(YellowBottomLeft, 255, 255, 150);
 			break;
 		case 4:
-			SetColor(GreenBottomRight, 0, 30, 0);
+			SetColor(GreenBottomRight, 150, 255, 150);
 			break;
-		default:
-			InitiateEndOfWorld(420, 69); ///Am not taking responsibility
 
-	}
-
-
-		
+	}		
 }
 
-void Game::InitiateEndOfWorld(int RIP, int RIP2)
-{
-	//Everyone is now ded
-}

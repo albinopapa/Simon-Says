@@ -20,5 +20,28 @@ public:
 		VerticalBottom = GivenVerticalBottom;
 		VerticalTop = GivenVerticalTop;
 	}
+	void Draw(int AxisX, int AxisY, Graphics& gfx)
+	{
+		for (int TempX = HorizontalLeft; TempX < HorizontalRight; TempX++)
+		{
+			for (int TempY = VerticalTop; TempY < VerticalBottom; TempY++)
+			{
+				gfx.PutPixel(AxisX + TempX, AxisY + TempY, RedV, GreenV, BlueV);
+			}
+		}
+	};
+	bool IsSelected(int AxisX, int AxisY, MainWindow& wnd)
+	{
+		int AbsoluteXLeft = AxisX + HorizontalLeft;
+		int AbsoluteXRight = AxisX + HorizontalRight;
+		int AbsoluteYTop = AxisY + VerticalTop;
+		int AbsoluteYBottom = AxisY + VerticalBottom;
+		
+		if (AbsoluteXLeft < wnd.mouse.GetPosX() && wnd.mouse.GetPosX() < AbsoluteXRight && AbsoluteYTop < wnd.mouse.GetPosY() && wnd.mouse.GetPosY() < AbsoluteYBottom && wnd.mouse.LeftIsPressed())
+		{
+			return true;
+		}
+		return false;
+	}
 };
 
